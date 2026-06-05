@@ -10,14 +10,24 @@
     <div class="card">
       <div class="crop-label">작물 선택 <span class="crop-optional">(선택 안 해도 됩니다)</span></div>
       <div class="crop-row">
-        <button
-          v-for="c in CROPS" :key="c.name"
-          :class="['crop-btn', crop === c.name ? 'active' : '']"
-          @click="crop = crop === c.name ? null : c.name"
-        >
+        <!-- 메인 3버튼 -->
+        <button :class="['crop-btn', crop === '포도' ? 'active' : '']"
+          @click="selectMain('포도')">🍇 포도</button>
+        <button :class="['crop-btn', crop === '복숭아' ? 'active' : '']"
+          @click="selectMain('복숭아')">🍑 복숭아</button>
+        <button :class="['crop-btn', showEtc || ETC_CROPS.some(c => c.name === crop) ? 'active' : '']"
+          @click="toggleEtc">🌿 기타 {{ showEtc ? '▲' : '▼' }}</button>
+      </div>
+
+      <!-- 기타 펼침 -->
+      <div v-if="showEtc" class="crop-sub-row">
+        <button v-for="c in ETC_CROPS" :key="c.name"
+          :class="['crop-btn crop-btn-sm', crop === c.name ? 'active' : '']"
+          @click="selectEtc(c.name)">
           {{ c.emoji }} {{ c.name }}
         </button>
       </div>
+
       <div v-if="crop" class="crop-hint">✅ {{ crop }} 기준으로 진단합니다</div>
       <div v-else class="crop-hint muted">📷 사진만으로 작물·병해충을 판단합니다</div>
     </div>
@@ -109,16 +119,29 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase.js'
 
-const CROPS = [
-  { name: '포도',   emoji: '🍇' },
-  { name: '복숭아', emoji: '🍑' },
+const ETC_CROPS = [
   { name: '사과',   emoji: '🍎' },
   { name: '배',     emoji: '🍐' },
   { name: '토마토', emoji: '🍅' },
   { name: '고추',   emoji: '🌶' },
   { name: '딸기',   emoji: '🍓' },
-  { name: '기타',   emoji: '🌿' },
 ]
+
+const showEtc = ref(false)
+
+function selectMain(name) {
+  crop.value = crop.value === name ? null : name
+  showEtc.value = false
+}
+function toggleEtc() {
+  showEtc.value = !showEtc.value
+  if (!showEtc.value && ETC_CROPS.some(c => c.name === crop.value)) {
+    crop.value = null
+  }
+}
+function selectEtc(name) {
+  crop.value = crop.value === name ? null : name
+}
 
 const videoEl    = ref(null)
 const canvasEl   = ref(null)
@@ -280,6 +303,8 @@ onUnmounted(stopCamera)
 .crop-row      { display: flex; flex-wrap: wrap; gap: 8px; }
 .crop-btn      { padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--bg); font-size: 13px; cursor: pointer; transition: all .15s; }
 .crop-btn.active { background: var(--green-light); border-color: var(--green); color: var(--green-dark); font-weight: 600; }
+.crop-sub-row  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.crop-btn-sm   { font-size: 12px; padding: 5px 11px; }
 .crop-hint     { margin-top: 10px; font-size: 12px; color: var(--green-dark); }
 .crop-hint.muted { color: var(--text-3); }
 
