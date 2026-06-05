@@ -274,7 +274,7 @@ async function diagnose() {
 
     // 이력 저장 (user_id 포함)
     const { data: { session } } = await supabase.auth.getSession()
-    await supabase.from('pest_ai_history').insert({
+    const { error: dbErr } = await supabase.from('pest_ai_history').insert({
       user_id: session?.user?.id ?? null,
       disease: data.disease,
       risk: data.risk,
@@ -285,6 +285,7 @@ async function diagnose() {
       confidence: data.confidence,
       diagnosed_at: new Date().toISOString()
     })
+    if (dbErr) console.error('[이력 저장 실패]', dbErr.message, dbErr.details)
   } catch (e) {
     error.value = e.message
   } finally {
