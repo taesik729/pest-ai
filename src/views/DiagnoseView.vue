@@ -2,8 +2,11 @@
   <div>
     <!-- 헤더 -->
     <div class="header">
-      <div class="title">🔬 병해충 AI 진단</div>
-      <div class="subtitle">Groq AI · 실시간 카메라 진단</div>
+      <div>
+        <div class="title">🔬 병해충 AI 진단</div>
+        <div class="subtitle">Groq AI · 실시간 카메라 진단</div>
+      </div>
+      <span class="disclaimer">참고용 · 전문가 확인 권장</span>
     </div>
 
     <!-- 작물 선택 (선택사항) -->
@@ -309,9 +312,13 @@ onUnmounted(stopCamera)
 .crop-hint     { margin-top: 10px; font-size: 12px; color: var(--green-dark); }
 .crop-hint.muted { color: var(--text-3); }
 
-.header { text-align: center; padding: 8px 0 4px; }
-.title  { font-size: 22px; font-weight: 700; }
+.header   { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0 4px; }
+.title    { font-size: 22px; font-weight: 700; }
 .subtitle { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+.disclaimer {
+  font-size: 11px; padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0;
+  background: var(--amber-light); color: var(--amber-dark); border: 1px solid var(--amber);
+}
 
 /* 카메라 */
 .camera-card { padding: 0; overflow: hidden; }
