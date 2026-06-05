@@ -6,6 +6,22 @@
       <div class="subtitle">Groq AI · 실시간 카메라 진단</div>
     </div>
 
+    <!-- 작물 선택 (선택사항) -->
+    <div class="card">
+      <div class="crop-label">작물 선택 <span class="crop-optional">(선택 안 해도 됩니다)</span></div>
+      <div class="crop-row">
+        <button
+          v-for="c in CROPS" :key="c.name"
+          :class="['crop-btn', crop === c.name ? 'active' : '']"
+          @click="crop = crop === c.name ? null : c.name"
+        >
+          {{ c.emoji }} {{ c.name }}
+        </button>
+      </div>
+      <div v-if="crop" class="crop-hint">✅ {{ crop }} 기준으로 진단합니다</div>
+      <div v-else class="crop-hint muted">📷 사진만으로 작물·병해충을 판단합니다</div>
+    </div>
+
     <!-- 카메라 / 이미지 영역 -->
     <div class="card camera-card">
       <!-- 실시간 카메라 스트리밍 -->
@@ -93,10 +109,22 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase.js'
 
+const CROPS = [
+  { name: '포도',   emoji: '🍇' },
+  { name: '복숭아', emoji: '🍑' },
+  { name: '사과',   emoji: '🍎' },
+  { name: '배',     emoji: '🍐' },
+  { name: '토마토', emoji: '🍅' },
+  { name: '고추',   emoji: '🌶' },
+  { name: '딸기',   emoji: '🍓' },
+  { name: '기타',   emoji: '🌿' },
+]
+
 const videoEl    = ref(null)
 const canvasEl   = ref(null)
 const galleryInput = ref(null)
 
+const crop       = ref(null)     // null = 선택 안 함
 const mode       = ref('idle')   // idle | camera | preview
 const imageFile  = ref(null)
 const imageUrl   = ref(null)
@@ -213,7 +241,7 @@ async function diagnose() {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: base64, mimeType, context: { crop: '범용' } })
+      body: JSON.stringify({ image: base64, mimeType, context: { crop: crop.value ?? '범용' } })
     })
     const raw = await res.text()
     let data
@@ -244,6 +272,15 @@ onUnmounted(stopCamera)
 </script>
 
 <style scoped>
+/* 작물 선택 */
+.crop-label    { font-size: 13px; font-weight: 700; color: var(--text-2); margin-bottom: 10px; }
+.crop-optional { font-size: 11px; font-weight: 400; color: var(--text-3); }
+.crop-row      { display: flex; flex-wrap: wrap; gap: 8px; }
+.crop-btn      { padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--bg); font-size: 13px; cursor: pointer; transition: all .15s; }
+.crop-btn.active { background: var(--green-light); border-color: var(--green); color: var(--green-dark); font-weight: 600; }
+.crop-hint     { margin-top: 10px; font-size: 12px; color: var(--green-dark); }
+.crop-hint.muted { color: var(--text-3); }
+
 .header { text-align: center; padding: 8px 0 4px; }
 .title  { font-size: 22px; font-weight: 700; }
 .subtitle { font-size: 12px; color: var(--text-3); margin-top: 4px; }
