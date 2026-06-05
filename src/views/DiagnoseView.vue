@@ -147,7 +147,7 @@ const videoEl    = ref(null)
 const canvasEl   = ref(null)
 const galleryInput = ref(null)
 
-const crop       = ref(null)     // null = 선택 안 함
+const crop       = ref('포도')   // 기본값: 포도
 const mode       = ref('idle')   // idle | camera | preview
 const imageFile  = ref(null)
 const imageUrl   = ref(null)
