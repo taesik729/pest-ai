@@ -37,9 +37,11 @@ const loading = ref(true)
 
 async function fetch() {
   loading.value = true
+  const { data: { session } } = await supabase.auth.getSession()
   const { data } = await supabase
     .from('pest_ai_history')
     .select('*')
+    .eq('user_id', session?.user?.id)
     .order('diagnosed_at', { ascending: false })
     .limit(50)
   rows.value = data ?? []

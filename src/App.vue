@@ -1,7 +1,9 @@
 <template>
   <div class="app-wrap">
     <router-view class="page-content" />
-    <nav class="tab-bar">
+
+    <!-- 탭바 (로그인 화면에서는 숨김) -->
+    <nav v-if="session" class="tab-bar">
       <button class="tab-item" :class="{ active: route.path === '/' }" @click="router.push('/')">
         <span class="tab-icon">🔬</span>
         진단
@@ -10,14 +12,36 @@
         <span class="tab-icon">📋</span>
         이력
       </button>
+      <button class="tab-item" @click="logout">
+        <span class="tab-icon">🚪</span>
+        로그아웃
+      </button>
     </nav>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-const route = useRoute()
-const router = useRouter()
+import { supabase } from './supabase.js'
+
+const route   = useRoute()
+const router  = useRouter()
+const session = ref(null)
+
+onMounted(async () => {
+  const { data } = await supabase.auth.getSession()
+  session.value = data.session
+
+  supabase.auth.onAuthStateChange((_, s) => {
+    session.value = s
+    if (!s) router.push('/login')
+  })
+})
+
+async function logout() {
+  await supabase.auth.signOut()
+}
 </script>
 
 <style scoped>
