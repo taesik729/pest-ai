@@ -1,0 +1,41 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #2d7a4f;
+  --green-light: #e8f5ee;
+  --green-dark: #1a5435;
+  --red: #e53935;
+  --red-light: #fdecea;
+  --red-dark: #b71c1c;
+  --amber: #f59e0b;
+  --amber-light: #fffbeb;
+  --amber-dark: #92400e;
+  --bg: #f4f6f5;
+  --surface: #ffffff;
+  --border: #e0e0e0;
+  --text: #1a1a1a;
+  --text-2: #555;
+  --text-3: #999;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+
+html, body { height: 100%; background: var(--bg); font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); }
+#app { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+
+/* 공통 */
+.card { background: var(--surface); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 20px; border-radius: var(--radius-sm); border: none; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+.btn:active { opacity: .8; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--green); color: #fff; width: 100%; padding: 15px; font-size: 16px; border-radius: var(--radius); }
+.btn-outline { background: transparent; color: var(--green); border: 1.5px solid var(--green); }
+
+/* 탭바 */
+.tab-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+.tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 0 6px; gap: 3px; font-size: 11px; color: var(--text-3); cursor: pointer; border: none; background: none; transition: color .15s; }
+.tab-item.active { color: var(--green); }
+.tab-icon { font-size: 22px; }
+
+@keyframes spin { to { transform: rotate(360deg) } }
