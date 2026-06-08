@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase.js'
 
@@ -32,10 +32,25 @@ const password = ref('')
 const confirm  = ref('')
 const loading  = ref(false)
 const msg      = ref('')
+const ready    = ref(false)   // 세션 준비 완료 여부
+
+onMounted(() => {
+  // Supabase가 URL 해시(#access_token=...&type=recovery)를 세션으로 변환하는 이벤트를 기다림
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY' && session) {
+      ready.value = true
+    }
+  })
+  // 이미 세션이 있는 경우 (페이지 재로드 등)
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) ready.value = true
+  })
+})
 
 async function save() {
   msg.value = ''
-  if (password.value.length < 6)           { msg.value = '비밀번호는 6자 이상이어야 합니다'; return }
+  if (!ready.value)                         { msg.value = '재설정 링크가 만료됐거나 유효하지 않습니다. 다시 요청해주세요.'; return }
+  if (password.value.length < 6)            { msg.value = '비밀번호는 6자 이상이어야 합니다'; return }
   if (password.value !== confirm.value)     { msg.value = '비밀번호가 일치하지 않습니다'; return }
   loading.value = true
   const { error } = await supabase.auth.updateUser({ password: password.value })
