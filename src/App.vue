@@ -12,9 +12,9 @@
         <span class="tab-icon">📋</span>
         이력
       </button>
-      <button class="tab-item" @click="logout">
-        <span class="tab-icon">🚪</span>
-        로그아웃
+      <button class="tab-item" :class="{ active: route.path === '/settings' }" @click="router.push('/settings')">
+        <span class="tab-icon">⚙️</span>
+        설정
       </button>
     </nav>
   </div>
@@ -41,6 +41,7 @@ onMounted(async () => {
 
 async function logout() {
   await supabase.auth.signOut()
+  router.push('/login')
 }
 </script>
 
