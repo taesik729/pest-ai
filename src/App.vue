@@ -21,9 +21,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { supabase } from './supabase.js'
+import { initAdMob, showBanner, hideBanner } from './composables/useAdMob.js'
 
 const route   = useRoute()
 const router  = useRouter()
@@ -37,6 +38,18 @@ onMounted(async () => {
     session.value = s
     if (!s) router.push('/login')
   })
+
+  // AdMob 초기화
+  await initAdMob()
+})
+
+// 로그인 상태 변경 시 배너 표시/숨김
+watch(session, async (newSession) => {
+  if (newSession) {
+    await showBanner()
+  } else {
+    await hideBanner()
+  }
 })
 
 async function logout() {

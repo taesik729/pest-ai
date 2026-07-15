@@ -13,11 +13,15 @@
       <div class="sec-title">앱 정보</div>
       <div class="info-row">
         <span class="info-label">버전</span>
-        <span class="info-val">0.1.0</span>
+        <span class="info-val">1.0.0</span>
       </div>
       <div class="info-row">
         <span class="info-label">AI 모델</span>
         <span class="info-val">Llama 4 Scout (Groq)</span>
+      </div>
+      <div class="info-row link-row" @click="$router.push('/privacy')">
+        <span class="info-label">개인정보처리방침</span>
+        <span class="info-val info-link">보기 →</span>
       </div>
     </div>
 
@@ -94,6 +98,9 @@ async function withdraw() {
 .info-row   { display: flex; justify-content: space-between; align-items: center; padding: 6px 0;
               border-bottom: 1px solid var(--border); }
 .info-row:last-child { border-bottom: none; }
+.link-row { cursor: pointer; }
+.link-row:hover .info-link { color: var(--green); }
+.info-link { color: var(--text-3); font-size: 13px; }
 .info-label { font-size: 14px; color: var(--text-2); }
 .info-val   { font-size: 14px; font-weight: 500; max-width: 200px; overflow: hidden;
               text-overflow: ellipsis; white-space: nowrap; }

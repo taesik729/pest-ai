@@ -6,6 +6,7 @@ import HistoryView from './views/HistoryView.vue'
 import LoginView from './views/LoginView.vue'
 import SettingsView from './views/SettingsView.vue'
 import ResetPasswordView from './views/ResetPasswordView.vue'
+import PrivacyView from './views/PrivacyView.vue'
 import { supabase } from './supabase.js'
 import './style.css'
 
@@ -14,6 +15,7 @@ const router = createRouter({
   routes: [
     { path: '/login',          component: LoginView,         meta: { public: true } },
     { path: '/reset-password', component: ResetPasswordView, meta: { public: true } },
+    { path: '/privacy',        component: PrivacyView,       meta: { public: true } },
     { path: '/',               component: DiagnoseView },
     { path: '/history',        component: HistoryView },
     { path: '/settings',       component: SettingsView },

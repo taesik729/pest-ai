@@ -121,6 +121,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase.js'
+import { onDiagnoseComplete } from '../composables/useAdMob.js'
 
 const ETC_CROPS = [
   { name: '사과',   emoji: '🍎' },
@@ -289,6 +290,9 @@ async function diagnose() {
       diagnosed_at: new Date().toISOString()
     })
     if (dbErr) console.error('[이력 저장 실패]', dbErr.message, dbErr.details)
+
+    // 진단 완료 → 전면 광고 (3회마다 1번)
+    await onDiagnoseComplete()
   } catch (e) {
     error.value = e.message
   } finally {
